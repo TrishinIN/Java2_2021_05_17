@@ -6,9 +6,12 @@ import NetworkChatClientServer.src.ru.gb.java2.chat.clientserver.commands.AuthCo
 import NetworkChatClientServer.src.ru.gb.java2.chat.clientserver.commands.PrivateMessageCommandData;
 import NetworkChatClientServer.src.ru.gb.java2.chat.clientserver.commands.PublicMessageCommandData;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Timer;
+import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class ClientHandler {
 
@@ -17,6 +20,8 @@ public class ClientHandler {
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
     private String username;
+    private Scanner inMessage;
+
 
     public ClientHandler(MyServer server, Socket clientSocket) {
         this.server = server;
@@ -66,6 +71,23 @@ public class ClientHandler {
                     server.subscribe(this);
                     return;
                 }
+            }
+            Future<?> awaitingAuth = Executors.newSingleThreadExecutor ().submit (() -> {
+                while (true) {
+                    if (username == null) {
+                            return;
+                        }
+                    }
+            });
+
+            try {
+                String login = (String) awaitingAuth.get (120, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                //обработка таймаута авторизации
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
